@@ -6,12 +6,6 @@ from alive_progress import alive_bar
 import torch
 from transformers import AutoModel, AutoTokenizer, PreTrainedTokenizer, PreTrainedModel
 
-"""Loop idea
-    Load corrector,
-    loop over all data,
-    calc score
-"""
-
 def get_dataset(data_name):
     possible_list = ["quora", "signal1m", "msmarco", "climate-fever", "fever", "dbpedia-entity", "nq", "hotpotqa", "fiqa", "webis-touche2020" , "arguana", "scidocs", "trec-covid", "robust04", "bioasq", "scifact", "nfcorpus", "trec-news"]
     if data_name not in possible_list:
