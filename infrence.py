@@ -12,6 +12,24 @@ from transformers import AutoModel, AutoTokenizer, PreTrainedTokenizer, PreTrain
     calc score
 """
 
+def get_dataset(data_name):
+    possible_list = ["quora", "signal1m", "msmarco", "climate-fever", "fever", "dbpedia-entity", "nq", "hotpotqa", "fiqa", "webis-touche2020" , "arguana", "scidocs", "trec-covid", "robust04", "bioasq", "scifact", "nfcorpus", "trec-news"]
+    if data_name not in possible_list:
+        raise Exception(f"dataset {data_name} is not a suported dataset pick a dataset from \n {possible_list}")
+    
+    # signal1m, robust04, bioasq and trec-news have different formatted datasets
+    # cqadupstack doesn't seem to have a working dataset
+    if data_name == "signal1m":
+        sent_list = load_dataset("BeIR/signal1m-generated-queries")["train"]["text"]
+    elif data_name == "robust04":
+        sent_list = load_dataset("BeIR/robust04-generated-queries")["train"]["text"]
+    elif data_name == "bioasq":
+        sent_list = load_dataset("BeIR/bioasq-generated-queries")["train"]["text"]
+    elif data_name == "trec-news":
+        sent_list = load_dataset("BeIR/trec-news-generated-queries")["train"]["text"]
+    else:
+        sent_list = load_dataset(f"BeIR/{data_name}", "corpus")["corpus"]["text"] 
+    return sent_list
 
 def get_gtr_embeddings(text_list,
                        encoder: PreTrainedModel,
@@ -45,7 +63,7 @@ def calc_F1(real_data, pred_data):
     f1_score = 0
     for idx, sent in enumerate(real_data):
         pred_sent = pred_data[idx]
-        TP = len(sent.intersection(pred_sent)) # get true positives by all tokens in both sets
+        TP = len(sent.intersection(pred_sent)) # get true positives by all tokens present in both sets
         FP = len(pred_sent - sent) # get false positves as tokens in the pred sent but not in the real sent
         FN = len(sent - pred_sent) # get false negatives as tokens in the real sent but not in the pred sent
         if TP == 0:
@@ -72,22 +90,17 @@ def eval_metric(real_data, pred_data):
     
     return bleu, F1, exact
     pass
-
-def data_loader(data_name):
-    pass
-
-
 def infrence_loop(data_name, num_steps, batch_size = 64):
     corrector = vec2text.load_pretrained_corrector("gtr-base")
     encoder = AutoModel.from_pretrained("sentence-transformers/gtr-t5-base").encoder.to("cuda")
     tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/gtr-t5-base")
-    ds = load_dataset("BeIR/quora", "corpus")["corpus"]["text"]
+    ds = get_dataset(data_name)
     bleu = 0
     F1 = 0
-    exact = 0
+    exact = 0 # exact matches
     
     total_itters = len(ds) // batch_size
-    total_itters = min(total_itters, 1000)
+    total_itters = min(total_itters, 10)
     print(total_itters)
     with alive_bar(total_itters) as bar:
         for itter in range(total_itters):
@@ -99,7 +112,6 @@ def infrence_loop(data_name, num_steps, batch_size = 64):
             F1 += temp_F1 / total_itters
             exact += temp_exact / total_itters
             bar()
-    print(bleu)
-    print(F1)
-    print(exact)
-infrence_loop("", 0)
+    return bleu, F1, exact
+
+results = infrence_loop("quora", 50)
