@@ -1,8 +1,8 @@
-from src.inference_model import Vec2textInferenceModel
+from ir2.inference_model import Vec2textInferenceModel
 
 if __name__ == "__main__":
     model = Vec2textInferenceModel(
-        model_name="bert-base-uncased", corrector_name="bert-base-uncased"
+        model_name="sentence-transformers/gtr-t5-base", corrector_name="gtr-base"
     )
 
     INPUT = (

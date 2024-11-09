@@ -54,9 +54,11 @@ class Vec2textInferenceModel:
 
         if self._cuda_is_available():
             embeddings = embeddings.to("cuda")
+        else:
+            embeddings = embeddings.to(self._corrector.model.device)
 
         inverted_embeddings: list[str] = vec2text.invert_embeddings(
-            embeddings=embeddings.cuda(),
+            embeddings=embeddings,
             corrector=self._corrector,
             num_steps=num_steps,
         )
