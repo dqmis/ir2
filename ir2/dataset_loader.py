@@ -58,4 +58,4 @@ class DatasetLoader:
         if name is None:
             return load_dataset(full_dataset_name, split=split)
 
-        return load_dataset(full_dataset_name, name=name, split=split)
+        return load_dataset(full_dataset_name, name=name, split=split)["text"]

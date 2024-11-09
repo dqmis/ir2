@@ -1,0 +1,5 @@
+model_name: sentence-transformers/gtr-t5-base
+corrector_name: gtr-base
+batch_size: 2
+dataset: quora
+num_steps: 2
