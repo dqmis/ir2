@@ -72,6 +72,21 @@ warn_return_any = true
 warn_redundant_casts = true
 strict_equality = true
 [[tool.mypy.overrides]]
-# Put dependencie's name here if mypy fails to import stubs
-module = ["scipy.*"]
+module = [
+  "scipy.*",
+  "transformers.*",
+  "torch.*",
+  "torchvision.*",
+  "numpy.*",
+  "pandas.*",
+  "sklearn.*",
+  "gensim.*",
+  "nltk.*",
+  "spacy.*",
+  "matplotlib.*",
+  "seaborn.*",
+  "vec2text.*",
+  "datasets.*",
+]
 ignore_missing_imports = true
+# Put dependencie's name here if mypy fails to import stubs
