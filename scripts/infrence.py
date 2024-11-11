@@ -27,11 +27,15 @@ def infrence_loop(config: Config):
     measures = []
 
     for batch in tqdm(split_dataset_into_chunks(ds, config.batch_size)):
-        embeddings = infrence_model.get_embeddings(batch)
+        embeddings = infrence_model.get_embeddings(
+            batch,
+            add_gaussian_noise=config.add_gaussian_noise,
+            noise_mean=config.noise_mean,
+            noise_std=config.noise_std,
+        )
         results = infrence_model.invert_embeddings(embeddings, num_steps=config.num_steps)
 
         measures.append(eval_metrics(batch, results))
-        break
 
     avg_bleu = sum([m["bleu"] for m in measures]) / len(measures)
     avg_f1 = sum([m["f1"] for m in measures]) / len(measures)

@@ -22,6 +22,9 @@ class Vec2textInferenceModel:
         max_length: int = 128,
         truncation: bool = True,
         padding: str = "max_length",
+        add_gaussian_noise: bool = False,
+        noise_mean: float = 0,
+        noise_std: float = 0.1,
     ) -> torch.Tensor:
 
         inputs = self._tokenizer(
@@ -43,6 +46,9 @@ class Vec2textInferenceModel:
             embeddings: torch.Tensor = vec2text.models.model_utils.mean_pool(
                 hidden_state, inputs["attention_mask"]
             )
+
+            if add_gaussian_noise:
+                embeddings += torch.normal(mean=noise_mean, std=noise_std, size=embeddings.size())
 
         return embeddings
 

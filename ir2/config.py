@@ -10,6 +10,9 @@ class Config:
     dataset: str
     num_steps: int
     batch_size: int
+    add_gaussian_noise: bool = False
+    noise_mean: float = 0
+    noise_std: float = 0.1
 
     @classmethod
     def load(cls, config_file: str) -> "Config":
