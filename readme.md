@@ -25,6 +25,21 @@ pre-commit install
 poetry run poetry2conda pyproject.toml environment.yaml
 ```
 
+## Snellius setup
+
+1. Add the following to your `~/.bashrc` to enable conda in the terminal - `$ echo 'export PATH="/sw/arch/RHEL8/EB_production/2023/software/Anaconda3/2023.07-2/bin:$PATH"' >> ~/.bashrc`
+2. Allocate some GPU recorces by running `$ srun --partition=gpu --gpus=1 --ntasks=1 --cpus-per-task=18  --time=00:30:00 --pty bash -i`
+3. Navigate to the project
+4. Run `$ conda env create -f environment.yaml`
+5. Activate environment: `$ source activate uva-ir2`
+6. Additionally install project by running `$ pip install -e .`
+7. Login to wandb: `$ wandb login`
+8. Verify that all is working by running `$ python tests/integration/test_inference_model.py`
+
+### Running sbatch jobs
+
+To run sbatch job, just modify the `snellius.job` file with the needed resources (mostly, change the execution time) and then run desired command by running: `$ sbatch snellius.job <COMMAND>`.
+
 ## Usage
 
 To run inference scripts, you need to first login to wandb:
