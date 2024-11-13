@@ -56,7 +56,7 @@ def BEIR_loop(dataset = "scifact", corpus_batch_size = 64):
         for i in range(total_batches):
             batch = corpus_ids[i*corpus_batch_size : (i+1) * corpus_batch_size]
             batch_text = [corpus[id]["text"] for id in batch]
-            corpus_embeddings = get_gtr_embeddings(encoder, tokenizer, batch_text)
+            corpus_embeddings = get_gtr_embeddings(batch_text, encoder, tokenizer)
             cosine_sim = calc_cosine_score(query_embeddings, corpus_embeddings)
             score_tensor[:, i*corpus_batch_size : (i+1) * corpus_batch_size] = cosine_sim
             bar()
