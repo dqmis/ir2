@@ -5,7 +5,7 @@ from beir.datasets.data_loader import GenericDataLoader
 from transformers import AutoModel, AutoTokenizer, PreTrainedTokenizer, PreTrainedModel
 import torch
 import vec2text
-
+from alive_progress import alive_bar
 def get_gtr_embeddings(text_list,
                        encoder: PreTrainedModel,
                        tokenizer: PreTrainedTokenizer) -> torch.Tensor:
@@ -32,33 +32,38 @@ def load_dataset(dataset = "msmarco"):
     corpus, queries, qrels = GenericDataLoader(data_folder=data_path).load(split="test")
     return corpus, queries, qrels
 
-def embed_data(text_list, add_noise = False):
-    encoder = AutoModel.from_pretrained("jxm/gtr__nq__32__correct").encoder.to("cuda")
-    tokenizer = AutoTokenizer.from_pretrained("jxm/gtr__nq__32__correct")
-    embeddings = get_gtr_embeddings(text_list, encoder, tokenizer)
+def calc_cosine_score(query_embeddings, corpus_embeddings):
+    dot = query_embeddings @ corpus_embeddings.T
+    query_norm = torch.norm(query_embeddings, dim=1)
+    corpus_norm = torch.norm(corpus_embeddings, dim = 1)
     
-    if add_noise:
-        pass
+    cosine_sim = dot / torch.outer(query_norm, corpus_norm)
     
-    return embeddings
-    
-def BEIR_loop(dataset = "msmarco", corpus_batch_size = 64):
+    return cosine_sim
+        
+def BEIR_loop(dataset = "scifact", corpus_batch_size = 64):
     corpus, queries, qrels = load_dataset(dataset)
+    encoder = AutoModel.from_pretrained("sentence-transformers/gtr-t5-base").encoder.to("cuda")
+    tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/gtr-t5-base")
     query_ids = list(queries.keys())
     corpus_ids = list(corpus.keys())
-    query_embeddings = embed_data(list(queries.values()))
+    query_embeddings = get_gtr_embeddings(list(queries.values()), encoder, tokenizer)
     total_batches = len(corpus_ids) // corpus_batch_size
-    for i in range(total_batches):
-        batch = corpus_ids[i*corpus_batch_size : (i+1) * corpus_batch_size]
-        batch_text = [corpus[id]["text"] for id in batch]
-        corpus_embedding = embed_data(batch_text, True)
-        print(query_embeddings.size())
-        print(corpus_embedding.size())
-        exit()
+    score_tensor = torch.zeros((len(query_ids), len(corpus_ids)))
+    
+    
+    with alive_bar(total_batches) as bar:
+        for i in range(total_batches):
+            batch = corpus_ids[i*corpus_batch_size : (i+1) * corpus_batch_size]
+            batch_text = [corpus[id]["text"] for id in batch]
+            corpus_embeddings = get_gtr_embeddings(encoder, tokenizer, batch_text)
+            cosine_sim = calc_cosine_score(query_embeddings, corpus_embeddings)
+            score_tensor[:, i*corpus_batch_size : (i+1) * corpus_batch_size] = cosine_sim
+            bar()
     # query_embeddings = embed_data()
     pass
 
 # corpus, queries, qrels = load_dataset()
 # print(len(queries))
 
-BEIR_loop()
+BEIR_loop("msmarco")
