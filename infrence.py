@@ -93,8 +93,8 @@ def eval_metric(real_data, pred_data):
     pass
 def infrence_loop(data_name, num_steps, batch_size = 64):
     corrector = vec2text.load_pretrained_corrector("gtr-base")
-    encoder = AutoModel.from_pretrained("sentence-transformers/gtr-t5-base").encoder.to("cuda")
-    tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/gtr-t5-base")
+    encoder = AutoModel.from_pretrained("jxm/gtr__nq__32__correct").encoder.to("cuda")
+    tokenizer = AutoTokenizer.from_pretrained("jxm/gtr__nq__32__correct")
     ds = get_dataset(data_name)
     bleu = 0
     F1 = 0
