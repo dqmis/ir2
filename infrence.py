@@ -58,6 +58,7 @@ def calc_bleu(real_data, pred_data):
     return bleu_score / len(real_data)
 
 def calc_F1(real_data, pred_data):
+    # check for tokens not for words
     real_data = [set(sent.split()) for sent in real_data]
     pred_data = [set(sent.split()) for sent in pred_data]
     f1_score = 0
@@ -100,7 +101,7 @@ def infrence_loop(data_name, num_steps, batch_size = 64):
     exact = 0 # exact matches
     
     total_itters = len(ds) // batch_size
-    total_itters = min(total_itters, 10)
+    total_itters = min(total_itters, 100)
     print(total_itters)
     with alive_bar(total_itters) as bar:
         for itter in range(total_itters):
@@ -115,3 +116,4 @@ def infrence_loop(data_name, num_steps, batch_size = 64):
     return bleu, F1, exact
 
 results = infrence_loop("quora", 50)
+print(results)
