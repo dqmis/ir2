@@ -1,5 +1,6 @@
 from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
-
+import numpy as np
+import torch
 
 def calc_bleu(real_data: list[str], pred_data: list[str]) -> float:
     _real_data = [sent.split() for sent in real_data]
@@ -53,3 +54,20 @@ def eval_metrics(real_data: list[str], pred_data: list[str]) -> dict[str, float]
     exact = calc_exact(real_data, pred_data)
 
     return {"bleu": bleu, "f1": f1, "exact": exact}
+
+def calc_NDCG(score_tensor, corpus_ids, query_ids, qrels):
+    ranking = torch.argsort(score_tensor)
+    normelizer = np.arange(2, 12)
+    normelizer = np.log2(normelizer)
+    NDCG = 0
+    for query_id in query_ids:
+        print(qrels[query_ids[0]]) 
+        relevant_docs = qrels[query_id]
+        ideal_score = np.array(sorted(list(relevant_docs.values()))[::-1][:10])
+        query_ranking = ranking[query_id][:10]
+        pred_score = np.array([relevant_docs[corpus_ids[doc_id]] for doc_id in query_ranking])
+        DCG = np.sum(pred_score / normelizer)
+        IDCG = np.sum(ideal_score / normelizer)
+        NDCG += DCG / IDCG
+    NDCG /= len(query_ids)
+    return NDCG
