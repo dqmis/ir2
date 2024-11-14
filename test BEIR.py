@@ -36,7 +36,8 @@ def load_dataset(dataset = "msmarco"):
     corpus, queries, qrels = GenericDataLoader(data_folder=data_path).load(split="test")
     return corpus, queries, qrels
 
-def calc_cosine_score(query_embeddings, corpus_embeddings):
+def calc_cosine_score(query_embeddings, corpus_embeddings, noise=0):
+    corpus_embeddings += (torch.normal(0,1, size=corpus_embeddings.size()) * noise) # add noise
     dot = query_embeddings @ corpus_embeddings.T
     query_norm = torch.norm(query_embeddings, dim=1)
     corpus_norm = torch.norm(corpus_embeddings, dim = 1)
