@@ -58,6 +58,7 @@ def inversion_attack_loop(config):
             add_gaussian_noise=config.add_gaussian_noise,
             noise_mean=config.noise_mean,
             noise_std=config.noise_std,
+            noise_lambda=config.noise_lambda,
         )
         cosine_sim = calc_cosine_score(query_embeddings, corpus_embeddings)
         score_tensor[:, batch_counter * config.batch_size : (batch_counter+1) * config.batch_size ] = cosine_sim

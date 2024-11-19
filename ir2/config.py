@@ -13,6 +13,7 @@ class Config:
     add_gaussian_noise: bool = False
     noise_mean: float = 0
     noise_std: float = 0.1
+    noise_lambda: float = 0.1
     max_samples: int
 
     @classmethod

@@ -25,6 +25,7 @@ class Vec2textInferenceModel:
         add_gaussian_noise: bool = False,
         noise_mean: float = 0,
         noise_std: float = 0.1,
+        noise_lambda: float = 0.1,
     ) -> torch.Tensor:
 
         inputs = self._tokenizer(
@@ -48,7 +49,8 @@ class Vec2textInferenceModel:
             )
 
             if add_gaussian_noise:
-                embeddings += torch.normal(mean=noise_mean, std=noise_std, size=embeddings.size())
+                embeddings += noise_lambda * torch.normal(mean=0, std=1, size=embeddings.size())
+                # embeddings += torch.normal(mean=noise_mean, std=noise_std, size=embeddings.size())
 
         return embeddings
 
