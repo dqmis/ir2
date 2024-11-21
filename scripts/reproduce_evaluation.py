@@ -2,15 +2,16 @@ import logging.config
 import random
 import sys
 
-import torch
-from tqdm import tqdm
-from vec2text.trainers.base import BaseTrainer
-
 import wandb
+from tqdm import tqdm
+
 from ir2.config import Config
 from ir2.dataset_loader import DatasetLoader
 from ir2.inference_model import Vec2textInferenceModel
 from ir2.utils import split_dataset_into_chunks
+from ir2.vec2text_measures import compute_text_comparison_metrics
+
+random.seed(42)
 
 logging.config.dictConfig(
     {
@@ -19,12 +20,10 @@ logging.config.dictConfig(
     }
 )
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 
 def compute_name_recovery_rates() -> dict[str, float]:
     # TODO: For table 3, rates of recovery for first, last, and full names
-    pass
+    {"foo": 0.0, "bar": 0.0}
 
 
 def inference_loop(config: Config):
@@ -32,57 +31,44 @@ def inference_loop(config: Config):
         model_name=config.model_name, corrector_name=config.corrector_name
     )
 
+    print("Loading data...")
     ds = DatasetLoader.load(config.dataset)
-    ds = random.sample(ds, config.max_samples)
+    ds = random.sample(ds, config.max_samples) if config.max_samples else ds
 
-    all_predictions = []
-    all_references = []
-    all_pred_embeddings = []
-    all_ref_embeddings = []
+    prediction_strs = []
+    reference_strs = []
 
-    tokenizer = inference_model._tokenizer
-
+    print("Running inference...")
     for batch in tqdm(split_dataset_into_chunks(ds, config.batch_size)):
-        embeddings = inference_model.get_embeddings(batch).to(device)
-        results = inference_model.invert_embeddings(embeddings, num_steps=config.num_steps)
+        input_embeddings, input_tokens = inference_model.get_embeddings(
+            batch,
+            max_length=config.max_seq_length,
+            add_gaussian_noise=config.add_gaussian_noise,
+            noise_lambda=config.noise_lambda,
+        )
+        prediction_str = inference_model.invert_embeddings(
+            input_embeddings,
+            num_steps=config.num_steps,
+            max_length=config.max_seq_length,
+            sequence_beam_width=config.sequence_beam_width,
+        )
 
-        all_references.extend(batch)
-        all_predictions.extend(results)
+        prediction_strs.extend(prediction_str)
+        reference_strs.extend(inference_model.batch_decode(input_tokens))
 
-        pred_embeddings = inference_model.get_embeddings(results).to(device)
-        ref_embeddings = embeddings
+    predictions_ids = inference_model.batch_encode_plus(prediction_strs)["input_ids"]
+    references_ids = inference_model.batch_encode_plus(reference_strs)["input_ids"]
 
-        all_pred_embeddings.append(pred_embeddings)
-        all_ref_embeddings.append(ref_embeddings)
-
-    all_pred_embeddings = torch.cat(all_pred_embeddings, dim=0)
-    all_ref_embeddings = torch.cat(all_ref_embeddings, dim=0)
-
-    decoded_preds = all_predictions
-    decoded_labels = all_references
-
-    predictions_ids = tokenizer.batch_encode_plus(
-        decoded_preds, return_tensors="pt", padding=True
-    )["input_ids"].to(device)
-    references_ids = tokenizer.batch_encode_plus(
-        decoded_labels, return_tensors="pt", padding=True
-    )["input_ids"].to(device)
-
-    trainer = BaseTrainer(
-        model=inference_model._encoder.to(device), tokenizer=inference_model._tokenizer
-    )
-    trainer.enable_emb_cos_sim_metric()
-
-    # TODO: Check if we should use the additional logic from trainer.evaluation_loop
-    metrics = trainer._text_comparison_metrics(
+    print("Computing metrics...")
+    metrics = compute_text_comparison_metrics(
         predictions_ids=predictions_ids.tolist(),
-        predictions_str=decoded_preds,
+        predictions_str=prediction_strs,
         references_ids=references_ids.tolist(),
-        references_str=decoded_labels,
+        references_str=reference_strs,
     )
 
     if config.dataset == "mimic-iii":  # Relevant for table 3
-        name_recovery_metrics = compute_name_recovery_rates(decoded_preds, decoded_labels)
+        name_recovery_metrics = compute_name_recovery_rates(prediction_strs, reference_strs)
         metrics.update(name_recovery_metrics)
 
     return metrics

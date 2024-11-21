@@ -10,11 +10,11 @@ class Config:
     dataset: str
     num_steps: int
     batch_size: int
+    max_samples: int | None = None
+    max_seq_length: int = 32
+    sequence_beam_width: int = 0
     add_gaussian_noise: bool = False
-    noise_mean: float = 0
-    noise_std: float = 0.1
-    noise_lambda: list = [0.1]
-    max_samples: int
+    noise_lambda: float = 0.1
 
     @classmethod
     def load(cls, config_file: str) -> "Config":
