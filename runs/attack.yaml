@@ -5,6 +5,6 @@ batch_size: 64
 num_steps: 20
 max_samples: 100
 add_gaussian_noise: True
-noise_std: 0
-noise_lambda: 1
-noise_lambda: 0
+noise_mean: 0
+noise_std: 1
+noise_lambda_list: [1, 0.1, 0.01, 0.001]
