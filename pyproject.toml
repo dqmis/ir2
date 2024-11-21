@@ -87,6 +87,7 @@ module = [
   "seaborn.*",
   "vec2text.*",
   "datasets.*",
+  "evaluate.*",
 ]
 ignore_missing_imports = true
 # Put dependencie's name here if mypy fails to import stubs
