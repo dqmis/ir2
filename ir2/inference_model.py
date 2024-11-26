@@ -61,10 +61,12 @@ class Vec2textInferenceModel:
     def invert_embeddings(
         self,
         embeddings: torch.Tensor,
-        num_steps: int,
+        num_steps: int = 0,
         min_length: int = 1,
         max_length: int = 32,
         sequence_beam_width: int = 0,
+        do_sample: bool = False,
+        top_p: float | None = None,
     ) -> list[str]:
 
         if self._cuda_is_available():
@@ -78,8 +80,10 @@ class Vec2textInferenceModel:
         gen_kwargs = copy.copy(self._corrector.gen_kwargs)
         gen_kwargs["min_length"] = min_length
         gen_kwargs["max_length"] = max_length
+        gen_kwargs["do_sample"] = do_sample
+        gen_kwargs["top_p"] = top_p
 
-        if num_steps is None:
+        if num_steps == 0:
             assert (
                 sequence_beam_width == 0
             ), "can't set a nonzero beam width without multiple steps"
@@ -101,9 +105,9 @@ class Vec2textInferenceModel:
                 sequence_beam_width=sequence_beam_width,
             )
 
-            prediction_strs: list[str] = self._tokenizer.batch_decode(
-                outputs, skip_special_tokens=True
-            )
+        prediction_strs: list[str] = self._tokenizer.batch_decode(
+            outputs, skip_special_tokens=True
+        )
 
         return prediction_strs
 

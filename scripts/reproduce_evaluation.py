@@ -2,9 +2,9 @@ import logging.config
 import random
 import sys
 
-import wandb
 from tqdm import tqdm
 
+import wandb
 from ir2.config import Config
 from ir2.dataset_loader import DatasetLoader
 from ir2.inference_model import Vec2textInferenceModel
@@ -51,6 +51,8 @@ def inference_loop(config: Config):
             num_steps=config.num_steps,
             max_length=config.max_seq_length,
             sequence_beam_width=config.sequence_beam_width,
+            do_sample=config.do_sample,
+            top_p=config.top_p,
         )
 
         prediction_strs.extend(prediction_str)
@@ -80,5 +82,6 @@ if __name__ == "__main__":
     results = inference_loop(config)
 
     wandb.init(project="ir2", config=config)
+    wandb.run.name = f"model-{config.model_name}_corrector-{config.corrector_name}_steps-{config.num_steps}_beam-{config.sequence_beam_width}_nucleus-{config.do_sample}"
     wandb.log(results)
     wandb.finish()

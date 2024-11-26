@@ -1,3 +1,5 @@
+# From https://github.com/jxmorris12/vec2text/blob/e5022f169fa971a16d6d5f4788b024c53997debe/vec2text/trainers/base.py#L263
+
 import collections
 
 import evaluate
