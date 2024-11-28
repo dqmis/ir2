@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#SBATCH --output=out/reproduce_table_1_%A.out
+#SBATCH --job-name=ReproduceTable1
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=4
+#SBATCH --time=1:00:00
+#SBATCH --partition=gpu
+#SBATCH --gpus=1
+#SBATCH --ntasks=1
+
+if ! conda info --envs | grep -q 'uva-ir2'; then
+    conda env create -f environment.yaml
+fi
+
+source activate uva-ir2
+
+if ! pip list 2>/dev/null | grep -q 'ir2'; then
+    pip install -e .
+fi
+
+wandb login $WANDB_API_KEY
+
+CONFIG_PATH='ir2/runs/table_1/gtr-nq/vec2text'
+
+
+if [ -d "$CONFIG_PATH" ]; then
+    # dir
+    for CONFIG in $CONFIG_PATH/*.yaml; do
+        echo "Running configuration: $CONFIG"
+        python ir2/scripts/reproduce_evaluation.py "$CONFIG"
+    done
+elif [ -f "$CONFIG_PATH" ]; then
+    # file
+    echo "Running configuration: $CONFIG_PATH"
+    python ir2/scripts/reproduce_evaluation.py "$CONFIG_PATH"
+else
+    echo "Error: $CONFIG_PATH is not a valid file or directory."
+fi
