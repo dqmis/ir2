@@ -19,8 +19,6 @@ class Config:
     sequence_beam_width: int = 0
     do_sample: bool = False
     top_p: float | None = None
-    add_gaussian_noise: bool = False
-    noise_lambda: float = 0.1
 
     @classmethod
     def load(cls, config_file: str) -> "Config":

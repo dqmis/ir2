@@ -63,7 +63,7 @@ def calc_NDCG(
     query_ids: list[str],
     qrels: dict[str, dict[str, str]],
 ) -> float:
-    ranking = torch.argsort(score_tensor)
+    ranking = torch.argsort(score_tensor, descending=True)
     normelizer = np.arange(2, 12)
     normelizer = np.log2(normelizer)
     NDCG = 0.0
