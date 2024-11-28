@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import yaml
 
@@ -10,11 +10,11 @@ class Config:
     dataset: str
     num_steps: int
     batch_size: int
+    max_samples: int
     add_gaussian_noise: bool = False
     noise_mean: float = 0
     noise_std: float = 0.1
-    noise_lambda: list = [0.1]
-    max_samples: int
+    noise_lambda: list = field(default_factory=list)
 
     @classmethod
     def load(cls, config_file: str) -> "Config":

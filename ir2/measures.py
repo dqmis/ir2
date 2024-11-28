@@ -1,6 +1,7 @@
-from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
 import numpy as np
 import torch
+from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
+
 
 def calc_bleu(real_data: list[str], pred_data: list[str]) -> float:
     _real_data = [sent.split() for sent in real_data]
@@ -55,17 +56,36 @@ def eval_metrics(real_data: list[str], pred_data: list[str]) -> dict[str, float]
 
     return {"bleu": bleu, "f1": f1, "exact": exact}
 
-def calc_NDCG(score_tensor, corpus_ids, query_ids, qrels):
+
+def calc_NDCG(
+    score_tensor: torch.Tensor,
+    corpus_ids: list[str],
+    query_ids: list[str],
+    qrels: dict[str, dict[str, str]],
+) -> float:
     ranking = torch.argsort(score_tensor)
     normelizer = np.arange(2, 12)
     normelizer = np.log2(normelizer)
-    NDCG = 0
-    for query_id in query_ids:
-        print(qrels[query_ids[0]]) 
+    NDCG = 0.0
+    for internal_query_id, query_id in enumerate(query_ids):
         relevant_docs = qrels[query_id]
-        ideal_score = np.array(sorted(list(relevant_docs.values()))[::-1][:10])
-        query_ranking = ranking[query_id][:10]
-        pred_score = np.array([relevant_docs[corpus_ids[doc_id]] for doc_id in query_ranking])
+        # get ideal score
+        ideal_score = np.zeros(shape=(10,))  # hardcodes for NDCG @ 10
+        best_scores = sorted(list(relevant_docs.values()))[::-1][:10]
+        for rank, val in enumerate(best_scores):
+            ideal_score[rank] = val
+
+        # get pred score
+        pred_score = np.zeros(shape=(10,))
+        query_ranking = ranking[internal_query_id][:10]
+        for rank, doc_id in enumerate(query_ranking):
+            doc_id = corpus_ids[doc_id]
+            # not all doc ids are present in relevant docs
+            # give a score of zero in this case
+            if doc_id in relevant_docs:
+                pred_score[rank] += relevant_docs[doc_id]
+
+        # calc NDCG
         DCG = np.sum(pred_score / normelizer)
         IDCG = np.sum(ideal_score / normelizer)
         NDCG += DCG / IDCG

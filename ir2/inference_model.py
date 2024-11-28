@@ -5,7 +5,6 @@ from transformers import AutoModel, AutoTokenizer
 
 class Vec2textInferenceModel:
     def __init__(self, model_name: str, corrector_name: str):
-
         self._encoder = AutoModel.from_pretrained(model_name).encoder
         self._tokenizer = AutoTokenizer.from_pretrained(model_name)
         self._corrector = vec2text.load_pretrained_corrector(corrector_name)
@@ -27,7 +26,6 @@ class Vec2textInferenceModel:
         noise_std: float = 0.1,
         noise_lambda: float = 0.1,
     ) -> torch.Tensor:
-
         inputs = self._tokenizer(
             text_list,
             return_tensors="pt",
@@ -49,8 +47,10 @@ class Vec2textInferenceModel:
             )
 
             if add_gaussian_noise:
-                embeddings += noise_lambda * torch.normal(mean=0, std=1, size=embeddings.size())
-                # embeddings += torch.normal(mean=noise_mean, std=noise_std, size=embeddings.size())
+                noise = noise_lambda * torch.normal(mean=0, std=1, size=embeddings.size())
+                if self._cuda_is_available():
+                    noise = noise.to("cuda")
+                embeddings += noise
 
         return embeddings
 
@@ -59,7 +59,6 @@ class Vec2textInferenceModel:
         embeddings: torch.Tensor,
         num_steps: int,
     ) -> list[str]:
-
         if self._cuda_is_available():
             embeddings = embeddings.to("cuda")
         else:
