@@ -1,0 +1,8 @@
+# Follows https://huggingface.co/jxm/gtr__nq__32__correct/blob/main/config.json, which is used to reproduce the experiments.
+model_name: sentence-transformers/gtr-t5-base
+corrector_name: gtr-base
+dataset: nq
+batch_size: 128
+num_steps: 20
+max_samples: 1000
+max_seq_length: 32

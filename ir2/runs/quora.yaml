@@ -1,0 +1,8 @@
+model_name: sentence-transformers/gtr-t5-base
+corrector_name: gtr-base
+dataset: quora
+batch_size: 2
+num_steps: 2
+add_gaussian_noise: true
+noise_mean: 0.0
+noise_std: 0.0
