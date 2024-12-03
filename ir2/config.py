@@ -15,6 +15,7 @@ class Config:
     noise_mean: float = 0
     noise_std: float = 0.1
     noise_lambda: list = field(default_factory=list)
+    dataset_list: list = field(default_factory=list)
     max_seq_length: int = 32
     sequence_beam_width: int = 0
     do_sample: bool = False

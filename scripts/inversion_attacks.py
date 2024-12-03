@@ -40,57 +40,96 @@ def inversion_attack_loop(config):
     infrence_model = Vec2textInferenceModel(
         model_name=config.model_name, corrector_name=config.corrector_name
     )
-    corpus, queries, qrels = load_dataset(config.dataset)  # maybe make this similar to infrence?
-
-    query_ids = list(queries.keys())
-    corpus_ids = list(corpus.keys())
-    query_text = [queries[id] for id in query_ids]
-    query_embeddings = infrence_model.get_embeddings(query_text, add_gaussian_noise=False)
-
     lambda_list = config.noise_lambda
     result_dict = dict()
     # sample only for reconstruction
     # maybe first loop over batches and then over noises
-    score_tensor = torch.zeros((len(lambda_list), len(query_ids), len(corpus_ids)))
-    measures = [[] for _ in range(len(lambda_list))]
-    batch_counter = 0
-    for batch in tqdm(split_dataset_into_chunks(corpus_ids, config.batch_size)):
-        # embed the data first and then add noise
-        # to save on embedding time
-        corpus_text = [corpus[id]["text"] for id in batch]
-        corpus_embeddings = infrence_model.get_embeddings(
-            corpus_text,
-            add_gaussian_noise=False
-        )
-        for lambda_idx, noise_lambda in enumerate(lambda_list):
-            # add noise
-            noise = noise_lambda * torch.normal(mean=0, std=1, size=corpus_embeddings.size())
-            if torch.cuda.is_available():
-                noise = noise.to("cuda")
-            noisy_embeddings = corpus_embeddings.detach().clone()
-            noisy_embeddings += noise
-            # retrieval
-            cosine_sim = calc_cosine_score(query_embeddings, noisy_embeddings)
-            score_tensor[lambda_idx, 
-                :,
-                batch_counter * config.batch_size : batch_counter * config.batch_size + len(batch),
-            ] = cosine_sim
-            
+    dataset_list = config.dataset_list
+    error_datasets = []
+    if os.path.isfile("out/results.pickle"):
+        with open("out/results.pickle", "rb") as f:
+            result_dict = pickle.load(f)
+    for dataset in dataset_list:
+        print(dataset)
+        # load corpus
+        if dataset in result_dict:
+            continue
+        try:
+            corpus, queries, qrels = load_dataset(dataset)  # maybe make this similar to infrence?
+            query_ids = list(queries.keys())
+            corpus_ids = list(corpus.keys())
+            query_text = [queries[id] for id in query_ids]
 
-            # reconstruction
-            # only do reconstruction for max amount of samples
-            if batch_counter < config.max_samples:
-                results = infrence_model.invert_embeddings(
-                    noisy_embeddings, num_steps=config.num_steps
+            # get query embeddings
+            query_embeddings, query_token_ids = infrence_model.get_embeddings(
+                query_text, add_gaussian_noise=False
+            )
+
+            # set up scores and measures
+            score_tensor = torch.zeros((len(lambda_list), len(query_ids), len(corpus_ids)))
+            measures = [[] for _ in range(len(lambda_list))]
+            batch_counter = 0
+
+            # attack loop
+            for batch in tqdm(split_dataset_into_chunks(corpus_ids, config.batch_size)):
+                # embed the data first and then add noise
+                # to save on embedding time
+                corpus_text = [corpus[id]["text"] for id in batch]
+                corpus_embeddings, corpus_token_ids = infrence_model.get_embeddings(
+                    corpus_text, add_gaussian_noise=False, max_length=config.max_seq_length
                 )
-                measures[lambda_idx].append(eval_metrics(corpus_text, results))
-        
-        batch_counter += 1
-    # save results
-    for lambda_idx, noise_lambda in enumerate(lambda_list): 
-        avg_bleu = sum([m["bleu"] for m in measures[lambda_idx]]) / len(measures[lambda_idx])
-        NDCG = calc_NDCG(score_tensor[lambda_idx], corpus_ids, query_ids, qrels)
-        result_dict[f"lambda noise {noise_lambda}"] = {"bleu": avg_bleu, "ndcg": NDCG}
+                for lambda_idx, noise_lambda in enumerate(lambda_list):
+                    # add noise
+                    noise = noise_lambda * torch.normal(
+                        mean=0, std=1, size=corpus_embeddings.size()
+                    )
+                    if torch.cuda.is_available():
+                        noise = noise.to("cuda")
+                    noisy_embeddings = corpus_embeddings.detach().clone()
+                    noisy_embeddings += noise
+                    # retrieval
+                    cosine_sim = calc_cosine_score(query_embeddings, noisy_embeddings)
+                    score_tensor[
+                        lambda_idx,
+                        :,
+                        batch_counter * config.batch_size : batch_counter * config.batch_size
+                        + len(batch),
+                    ] = cosine_sim
+
+                    # reconstruction
+                    # only do reconstruction for max amount of samples
+                    if batch_counter < config.max_samples:
+                        results = infrence_model.invert_embeddings(
+                            noisy_embeddings,
+                            num_steps=config.num_steps,
+                            max_length=config.max_seq_length,
+                        )
+                        measures[lambda_idx].append(eval_metrics(corpus_text, results))
+
+                batch_counter += 1
+            # save results
+            result_dict[dataset] = dict()
+            for lambda_idx, noise_lambda in enumerate(lambda_list):
+                avg_bleu = sum([m["bleu"] for m in measures[lambda_idx]]) / len(
+                    measures[lambda_idx]
+                )
+                NDCG = calc_NDCG(score_tensor[lambda_idx], corpus_ids, query_ids, qrels)
+                result_dict[dataset][f"lambda noise {noise_lambda}"] = {
+                    "bleu": avg_bleu,
+                    "ndcg": NDCG,
+                }
+            with open("out/results.pickle", "wb") as f:
+                pickle.dump(result_dict, f)
+
+            # # deleta all unzipped files to keep space
+            # filelist = os.listdir(f"datasets/{dataset}")
+            # for file in filelist:
+            #     os.remove(file)
+            # os.remove(f"datasets/{dataset}.zip")
+        except:
+            error_datasets.append(dataset)
+            continue  # This way if any dataset doesn't work we still get some results
+    print(error_datasets)
     return result_dict
 
 
@@ -103,5 +142,3 @@ if __name__ == "__main__":
     wandb.init(project="ir2", config=config)
     wandb.log(results)
     wandb.finish()
-    with open("out/scifact.pickle", "wb") as f:
-        pickle.dump(results, f)

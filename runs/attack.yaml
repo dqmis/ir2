@@ -1,6 +1,25 @@
 model_name: sentence-transformers/gtr-t5-base
 corrector_name: gtr-base
 dataset: scifact
+dataset_list : [
+  "arguana",
+  # "climate-fever",
+  # "cqadupstack",
+  # "dbpedia-entity",
+  # "fever",
+  "fiqa",
+  # "hotpotqa",
+  # "mmarco",
+  # "msmarco-v2",
+  "nfcorpus",
+  # "nq",
+  "quora",
+  # "scidocs",
+  "scifact",
+  "trec-vocid-v2",
+  "vihealthqa",
+  # "webis-touche2020"
+]
 batch_size: 64
 num_steps: 20
 max_samples: 10
