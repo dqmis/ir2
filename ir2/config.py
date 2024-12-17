@@ -16,10 +16,16 @@ class Config:
     noise_std: float = 0.1
     noise_lambda: list = field(default_factory=list)
     dataset_list: list = field(default_factory=list)
+    quantize_list: list = field(default_factory=list)
+    max_querry_samples: int = 100
     max_seq_length: int = 32
     sequence_beam_width: int = 0
     do_sample: bool = False
     top_p: float | None = None
+    export_path: str = "out/results.pickle"
+    quantize: bool = False
+    quant_max_val = 1.5
+    quant_min_val = -1.5
 
     @classmethod
     def load(cls, config_file: str) -> "Config":
