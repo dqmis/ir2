@@ -7,7 +7,6 @@ dataset_list : [
   "nfcorpus",
   "quora",
   "scifact",
-  "vihealthqa",
 ]
 quantize_list : [
   "naive-8-bit",

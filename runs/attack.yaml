@@ -7,7 +7,6 @@ dataset_list : [
   "nfcorpus",
   "quora",
   "scifact",
-  "vihealthqa",
 ]
 batch_size: 64
 num_steps: 20
