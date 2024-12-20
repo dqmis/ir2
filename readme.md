@@ -2,6 +2,19 @@
 
 This repository contains code for UvA IR2 project. The project is about reproducing results from the paper ["Text Embeddings Reveal (Almost) As Much As Text"](https://arxiv.org/abs/2310.06816).
 
+
+## Project structure
+We use the following project structure:
+
+```
+ir2/ - source directory
+notebooks/ - jupyter notebooks
+runs/ - configuration files for running experiments.
+scripts/ - scripts for running experiments
+tests/ - tests for the project
+docs/ - documentation for some of the findings
+```
+
 ## Installation
 
 1. Clone the repository
