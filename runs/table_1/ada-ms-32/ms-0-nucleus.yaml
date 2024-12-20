@@ -3,7 +3,7 @@ corrector_name: text-embedding-ada-002
 dataset: msmarco
 batch_size: 128
 num_steps: 0
-max_samples: 256
+max_samples: 1000
 max_seq_length: 32
 do_sample: true
 top_p: 0.9

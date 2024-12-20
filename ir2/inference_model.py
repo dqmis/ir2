@@ -1,11 +1,9 @@
 import copy
 
+import openai
 import torch
 import vec2text
 from transformers import AutoModel, AutoTokenizer
-import openai
-from transformers import GPT2TokenizerFast
-
 
 
 class OpenAIEncoder:
@@ -25,13 +23,11 @@ class OpenAIEncoder:
         return torch.tensor(([e.embedding for e in response.data]))
 
 
-
 class Vec2textInferenceModel:
 
     def __init__(self, model_name: str, corrector_name: str):
 
         self._corrector = vec2text.load_pretrained_corrector(corrector_name)
-
 
         if "ada" in model_name:
             self._encoder = OpenAIEncoder()
@@ -41,7 +37,6 @@ class Vec2textInferenceModel:
             self._tokenizer = AutoTokenizer.from_pretrained(model_name)
             if self._cuda_is_available():
                 self._encoder = self._encoder.to("cuda")
-
 
     def _cuda_is_available(self) -> bool:
         return torch.cuda.is_available()
