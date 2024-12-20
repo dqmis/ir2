@@ -28,7 +28,7 @@ wandb login $WANDB_API_KEY
 echo "Listing all files in the directory"
 ls -l
 
-CONFIG_PATH='runs/table_1/ada-ms-81/'
+CONFIG_PATH='runs/seq_len_influence/ada'
 
 
 if [ -d "$CONFIG_PATH" ]; then

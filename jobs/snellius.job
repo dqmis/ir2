@@ -15,5 +15,6 @@ module load 2023
 module load Anaconda3/2023.07-2
 
 export PYTHONPATH="${PYTHONPATH}:./"
+wandb a0f328dd2d8c5e84bddb890cfb343861b1ae0cb0
 source activate uva-ir2
 srun python scripts/inversion_attacks.py runs/attack.yaml

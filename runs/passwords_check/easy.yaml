@@ -1,0 +1,8 @@
+model_name: sentence-transformers/gtr-t5-base
+corrector_name: gtr-base
+dataset: passwords-easy
+batch_size: 128
+num_steps: 50
+max_samples: 1000
+max_seq_length: 32
+sequence_beam_width: 8
