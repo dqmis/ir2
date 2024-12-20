@@ -21,24 +21,30 @@ class _DatasetInfo:
 
 class DatasetLoader:
     _DATASET_MAP = {
-        "signal1m": _DatasetInfo(path="signal1m-generated-queries"),
-        "robust04": _DatasetInfo(path="robust04-generated-queries"),
-        "bioasq": _DatasetInfo(path="bioasq-generated-queries"),
-        "trec-news": _DatasetInfo(path="trec-news-generated-queries"),
-        "quora": _DatasetInfo(path="quora", name="corpus", split="corpus"),
-        "climate-fever": _DatasetInfo(path="climate-fever", name="corpus", split="corpus"),
-        "fever": _DatasetInfo(path="fever", name="corpus", split="corpus"),
-        "dbpedia-entity": _DatasetInfo(path="dbpedia-entity", name="corpus", split="corpus"),
-        "nq": _DatasetInfo(path="nq", name="corpus", split="corpus"),
-        "hotpotqa": _DatasetInfo(path="hotpotqa", name="corpus", split="corpus"),
-        "fiqa": _DatasetInfo(path="fiqa", name="corpus", split="corpus"),
-        "webis-touche2020": _DatasetInfo(path="webis-touche2020", name="corpus", split="corpus"),
-        "arguana": _DatasetInfo(path="arguana", name="corpus", split="corpus"),
-        "scidocs": _DatasetInfo(path="scidocs", name="corpus", split="corpus"),
-        "trec-covid": _DatasetInfo(path="trec-covid", name="corpus", split="corpus"),
-        "scifact": _DatasetInfo(path="scifact", name="corpus", split="corpus"),
-        "nfcorpus": _DatasetInfo(path="nfcorpus", name="corpus", split="corpus"),
-        "msmarco": _DatasetInfo(path="msmarco", name="corpus", split="corpus"),
+        "signal1m": _DatasetInfo(path="BeIR/signal1m-generated-queries"),
+        "robust04": _DatasetInfo(path="jxm/robust04__gtr_base__dpr", split="train"),
+        "bioasq": _DatasetInfo(path="jxm/bioasq__gtr_base__dpr", split="train"),
+        "trec-news": _DatasetInfo(path="jxm/trec-news__gtr_base__dpr", split="train"),
+        "arguana": _DatasetInfo(path="jxm/arguana__gtr_base__dpr", split="train"),
+        "quora": _DatasetInfo(path="BeIR/quora", name="corpus", split="corpus"),
+        "climate-fever": _DatasetInfo(path="jxm/climate-fever__gtr_base__dpr", split="train"),
+        "fever": _DatasetInfo(path="jxm/fever__gtr_base__dpr", split="train"),
+        "dbpedia-entity": _DatasetInfo(path="jxm/dbpedia", split="dev"),
+        "nq": _DatasetInfo(path="jxm/nq_corpus_dpr", split="dev"),
+        "hotpotqa": _DatasetInfo(path="jxm/hotpotqa__gtr_base__dpr", split="train"),
+        "fiqa": _DatasetInfo(path="jxm/fiqa__gtr_base__dpr", split="train"),
+        "webis-touche2020": _DatasetInfo(
+            path="jxm/webis-touche2020__gtr_base__dpr", split="train"
+        ),
+        "arguana": _DatasetInfo(path="jxm/arguana__gtr_base__dpr", split="train"),
+        "scidocs": _DatasetInfo(path="jxm/scidocs__gtr_base__dpr", split="train"),
+        "trec-covid": _DatasetInfo(path="jxm/trec-covid__gtr_base__dpr", split="train"),
+        "scifact": _DatasetInfo(path="jxm/scifact__gtr_base__dpr", split="train"),
+        "nfcorpus": _DatasetInfo(path="jxm/nfcorpus__gtr_base__dpr", split="train"),
+        "passwords-easy": _DatasetInfo(path="dqmis/passwords", split="train"),
+        "passwords-medium": _DatasetInfo(path="dqmis/passwords", split="validation"),
+        "passwords-hard": _DatasetInfo(path="dqmis/passwords", split="test"),
+        "msmarco": _DatasetInfo(path="jxm/msmarco__gtr_base__dpr", split="train"),
     }
 
     @classmethod

@@ -1,0 +1,7 @@
+model_name: Xenova/text-embedding-ada-002
+corrector_name: text-embedding-ada-002
+dataset: signal1m
+batch_size: 128
+num_steps: 0
+max_samples: 100
+max_seq_length: 128
