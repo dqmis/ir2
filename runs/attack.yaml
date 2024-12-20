@@ -11,7 +11,7 @@ dataset_list : [
 ]
 batch_size: 64
 num_steps: 20
-max_samples: 10
+max_samples: 50
 max_seq_length: 32
 max_querry_samples: 1000
 add_gaussian_noise: True
