@@ -2,14 +2,17 @@
 
 This repository contains code for UvA IR2 project. The project is about reproducing results from the paper ["Text Embeddings Reveal (Almost) As Much As Text"](https://arxiv.org/abs/2310.06816).
 
+> **Abstract**: This work investigates the Vec2Text method, which frames the embedding inversion problem as a controlled generation task. Our study aims to validate Vec2Text's ability to reconstruct text from embeddings, highlighting the privacy risks associated with embedding inversion. We reproduce Vec2Text's performance in both in-domain and out-of-domain settings, verifying its effectiveness while noting some discrepancies due to experimental details. We extend the study by exploring parameter sensitivity, password reconstruction, and embedding quantization as a defense strategy. The study concludes with insights into Vec2Text's robustness and potential risks, emphasizing the need for further research on embedding inversion methods and strategies to prevent them.
 
 ## Project structure
+
 We use the following project structure:
 
 ```
 ir2/ - source directory
 notebooks/ - jupyter notebooks
 runs/ - configuration files for running experiments.
+jobs/ - sbatch jobs for running experiments
 scripts/ - scripts for running experiments
 tests/ - tests for the project
 docs/ - documentation for some of the findings
