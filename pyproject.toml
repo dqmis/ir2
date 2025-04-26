@@ -2,7 +2,11 @@
 name = "ir2"
 version = "0.1.0"
 description = ""
+<<<<<<< HEAD
 authors = ["dqmis <dom.seputis@gmail.com>"]
+=======
+authors = ["anon"]
+>>>>>>> ed39763 (Removing uva connection)
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -22,10 +26,6 @@ isort = "^5.13.2"
 flake8-pyproject = "^1.2.3"
 poetry2conda = "^0.3.0"
 black = "^24.10.0"
-
-[tool.poetry2conda]
-name = "uva-ir2"
-
 
 [build-system]
 requires = ["poetry-core"]

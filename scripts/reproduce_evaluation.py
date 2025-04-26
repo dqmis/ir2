@@ -2,9 +2,9 @@ import logging.config
 import random
 import sys
 
+import wandb
 from tqdm import tqdm
 
-import wandb
 from ir2.config import Config
 from ir2.dataset_loader import DatasetLoader
 from ir2.inference_model import Vec2textInferenceModel
@@ -70,7 +70,13 @@ def inference_loop(config: Config):
     )
 
     if config.dataset == "mimic-iii":  # Relevant for table 3
+<<<<<<< HEAD
         name_recovery_metrics = compute_name_recovery_rates(prediction_strs, reference_strs)
+=======
+        name_recovery_metrics = compute_name_recovery_rates(
+            prediction_strs, reference_strs
+        )
+>>>>>>> ed39763 (Removing uva connection)
         metrics.update(name_recovery_metrics)
 
     return metrics
@@ -81,7 +87,11 @@ if __name__ == "__main__":
     config = Config.load(config_path)
     results = inference_loop(config)
 
+<<<<<<< HEAD
     wandb.init(project="ir2", config=config)
+=======
+    wandb.init(project="vec2text-repro", config=config)
+>>>>>>> ed39763 (Removing uva connection)
     wandb.run.name = f"model-{config.model_name}_corrector-{config.corrector_name}_steps-{config.num_steps}_beam-{config.sequence_beam_width}_nucleus-{config.do_sample}"
     wandb.log(results)
     wandb.finish()

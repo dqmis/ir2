@@ -1,6 +1,6 @@
-# IR2 Project
+# Vec2Text Reproducability Study
 
-This repository contains code for UvA IR2 project. The project is about reproducing results from the paper ["Text Embeddings Reveal (Almost) As Much As Text"](https://arxiv.org/abs/2310.06816).
+This repository contains code for reproducing results from the paper ["Text Embeddings Reveal (Almost) As Much As Text"](https://arxiv.org/abs/2310.06816).
 
 > **Abstract**: This work investigates the Vec2Text method, which frames the embedding inversion problem as a controlled generation task. Our study aims to validate Vec2Text's ability to reconstruct text from embeddings, highlighting the privacy risks associated with embedding inversion. We reproduce Vec2Text's performance in both in-domain and out-of-domain settings, verifying its effectiveness while noting some discrepancies due to experimental details. We extend the study by exploring parameter sensitivity, password reconstruction, and embedding quantization as a defense strategy. The study concludes with insights into Vec2Text's robustness and potential risks, emphasizing the need for further research on embedding inversion methods and strategies to prevent them.
 
@@ -41,6 +41,7 @@ pre-commit install
 poetry run poetry2conda pyproject.toml environment.yaml
 ```
 
+<<<<<<< HEAD
 ## Snellius setup
 
 1. Add the following to your `~/.bashrc` to enable conda in the terminal - `$ echo 'export PATH="/sw/arch/RHEL8/EB_production/2023/software/Anaconda3/2023.07-2/bin:$PATH"' >> ~/.bashrc`
@@ -56,6 +57,8 @@ poetry run poetry2conda pyproject.toml environment.yaml
 
 To run sbatch job, just modify the `snellius.job` file with the needed resources (mostly, change the execution time) and then run desired command by running: `$ sbatch snellius.job <COMMAND>`.
 
+=======
+>>>>>>> ed39763 (Removing uva connection)
 ## Usage
 
 To run inference scripts, you need to first login to wandb:

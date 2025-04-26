@@ -9,11 +9,11 @@
 #SBATCH --gpus=1
 #SBATCH --ntasks=1
 
-if ! conda info --envs | grep -q 'uva-ir2'; then
+if ! conda info --envs | grep -q 'vec2text-repro'; then
     conda env create -f environment.yaml
 fi
 
-source activate uva-ir2
+source activate vec2text-repro
 
 if ! pip list 2>/dev/null | grep -q 'ir2'; then
     pip install -e .
