@@ -2,11 +2,7 @@
 name = "ir2"
 version = "0.1.0"
 description = ""
-<<<<<<< HEAD
-authors = ["dqmis <dom.seputis@gmail.com>"]
-=======
 authors = ["anon"]
->>>>>>> ed39763 (Removing uva connection)
 
 [tool.poetry.dependencies]
 python = "^3.11"
