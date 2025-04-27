@@ -9,7 +9,7 @@ This repository contains code for reproducing results from the paper ["Text Embe
 We use the following project structure:
 
 ```
-ir2/ - source directory
+src/ - source directory
 notebooks/ - jupyter notebooks
 runs/ - configuration files for running experiments.
 jobs/ - sbatch jobs for running experiments

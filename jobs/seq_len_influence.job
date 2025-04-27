@@ -15,7 +15,7 @@ fi
 
 source activate vec2text-repro
 
-if ! pip list 2>/dev/null | grep -q 'ir2'; then
+if ! pip list 2>/dev/null | grep -q 'src'; then
     pip install -e .
 fi
 

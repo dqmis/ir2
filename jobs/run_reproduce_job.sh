@@ -20,7 +20,7 @@ if [ -z "$OPENAI_API_KEY" ] || [ -z "$WANDB_API_KEY" ] || [ -z "$JOB_SCRIPT" ]; 
     usage
 fi
 
-ssh scur2864@snellius.surf.nl << EOF
+ssh scur2864@cluster.surf.nl << EOF
     export OPENAI_API_KEY='$OPENAI_API_KEY'
     export WANDB_API_KEY='$WANDB_API_KEY'
 
@@ -29,4 +29,4 @@ EOF
 
 # Sync out/ back to local machine out/
 # TODO: Need to wait till sbatch runs. for now just manually sync
-# rsync -avz scur2864@snellius.surf.nl:/home/scur2864/ir2/out/ .
+# rsync -avz scur2864@cluster.surf.nl:/home/scur2864/src/out/ .

@@ -1,20 +1,14 @@
 import logging.config
 import sys
 
-<<<<<<< HEAD
-from tqdm import tqdm
-
-import wandb
-=======
 import wandb
 from tqdm import tqdm
 
->>>>>>> ed39763 (Removing uva connection)
-from ir2.config import Config
-from ir2.dataset_loader import DatasetLoader
-from ir2.inference_model import Vec2textInferenceModel
-from ir2.measures import eval_metrics
-from ir2.utils import split_dataset_into_chunks
+from src.config import Config
+from src.dataset_loader import DatasetLoader
+from src.inference_model import Vec2textInferenceModel
+from src.measures import eval_metrics
+from src.utils import split_dataset_into_chunks
 
 logging.config.dictConfig(
     {
@@ -39,9 +33,7 @@ def infrence_loop(config: Config):
             noise_mean=config.noise_mean,
             noise_std=config.noise_std,
         )
-        results = infrence_model.invert_embeddings(
-            embeddings, num_steps=config.num_steps
-        )
+        results = infrence_model.invert_embeddings(embeddings, num_steps=config.num_steps)
 
         measures.append(eval_metrics(batch, results))
 

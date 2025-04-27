@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ir2"
+name = "src"
 version = "0.1.0"
 description = ""
 authors = ["anon"]

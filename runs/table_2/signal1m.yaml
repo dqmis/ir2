@@ -1,4 +1,4 @@
-# Smaller batch size (128->16) to avoid OOM for Snellius, decreased max_samples to (1000->100) to speed up the experiment
+# Smaller batch size (128->16) to avoid OOM for cluster, decreased max_samples to (1000->100) to speed up the experiment
 model_name: Xenova/text-embedding-ada-002
 corrector_name: text-embedding-ada-002
 dataset: signal1m

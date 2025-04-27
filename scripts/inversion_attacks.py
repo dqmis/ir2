@@ -10,11 +10,11 @@ from beir import util
 from beir.datasets.data_loader import GenericDataLoader
 from tqdm import tqdm
 
-from ir2.config import Config
-from ir2.inference_model import Vec2textInferenceModel
-from ir2.quantization import quantize
-from ir2.utils import split_dataset_into_chunks
-from ir2.vec2text_measures import compute_text_comparison_metrics
+from src.config import Config
+from src.inference_model import Vec2textInferenceModel
+from src.quantization import quantize
+from src.utils import split_dataset_into_chunks
+from src.vec2text_measures import compute_text_comparison_metrics
 
 
 # load dataset
@@ -118,13 +118,7 @@ def inversion_attack_loop(config):
             for method_idx, method_val in enumerate(method_list):
                 # add noise
                 if not config.quantize:
-<<<<<<< HEAD
                     noise = method_val * torch.normal(mean=0, std=1, size=corpus_embeddings.size())
-=======
-                    noise = method_val * torch.normal(
-                        mean=0, std=1, size=corpus_embeddings.size()
-                    )
->>>>>>> ed39763 (Removing uva connection)
                     if torch.cuda.is_available():
                         noise = noise.to("cuda")
                     permutated_embeddings = corpus_embeddings.detach().clone()
@@ -143,13 +137,7 @@ def inversion_attack_loop(config):
                 score_tensor[
                     method_idx,
                     :,
-<<<<<<< HEAD
-                    batch_counter * config.batch_size : batch_counter * config.batch_size
-=======
-                    batch_counter * config.batch_size : batch_counter
-                    * config.batch_size
->>>>>>> ed39763 (Removing uva connection)
-                    + len(batch),
+                    batch_counter * config.batch_size : batch_counter * config.batch_size + len(batch),
                 ] = cosine_sim
 
                 # reconstruction
@@ -169,18 +157,9 @@ def inversion_attack_loop(config):
         result_dict[dataset] = dict()
         target_ids = inference_model.batch_encode_plus(target_strings)["input_ids"]
         for method_idx, method_val in enumerate(method_list):
-<<<<<<< HEAD
-
             # calc reconstruction metrics
             method_pred_strings = pred_strings[method_idx]
             method_pred_ids = inference_model.batch_encode_plus(method_pred_strings)["input_ids"]
-=======
-            # calc reconstruction metrics
-            method_pred_strings = pred_strings[method_idx]
-            method_pred_ids = inference_model.batch_encode_plus(method_pred_strings)[
-                "input_ids"
-            ]
->>>>>>> ed39763 (Removing uva connection)
             metrics = compute_text_comparison_metrics(
                 predictions_ids=method_pred_ids.tolist(),
                 predictions_str=method_pred_strings,
@@ -218,10 +197,6 @@ if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else "config.yaml"
     config = Config.load(config_path)
     results = inversion_attack_loop(config)
-<<<<<<< HEAD
-    wandb.init(project="ir2", config=config)
-=======
     wandb.init(project="vec2text-repro", config=config)
->>>>>>> ed39763 (Removing uva connection)
     wandb.log(results)
     wandb.finish()
