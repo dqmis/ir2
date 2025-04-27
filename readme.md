@@ -1,4 +1,4 @@
-# Vec2Text Reproducability Study
+# Vec2Text Reproducibility Study
 
 This repository contains code for reproducing results from the paper ["Text Embeddings Reveal (Almost) As Much As Text"](https://arxiv.org/abs/2310.06816).
 
