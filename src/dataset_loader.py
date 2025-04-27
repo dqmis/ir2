@@ -33,17 +33,15 @@ class DatasetLoader:
         "nq": _DatasetInfo(path="jxm/nq_corpus_dpr", split="dev"),
         "hotpotqa": _DatasetInfo(path="jxm/hotpotqa__gtr_base__dpr", split="train"),
         "fiqa": _DatasetInfo(path="jxm/fiqa__gtr_base__dpr", split="train"),
-        "webis-touche2020": _DatasetInfo(
-            path="jxm/webis-touche2020__gtr_base__dpr", split="train"
-        ),
+        "webis-touche2020": _DatasetInfo(path="jxm/webis-touche2020__gtr_base__dpr", split="train"),
         "arguana": _DatasetInfo(path="jxm/arguana__gtr_base__dpr", split="train"),
         "scidocs": _DatasetInfo(path="jxm/scidocs__gtr_base__dpr", split="train"),
         "trec-covid": _DatasetInfo(path="jxm/trec-covid__gtr_base__dpr", split="train"),
         "scifact": _DatasetInfo(path="jxm/scifact__gtr_base__dpr", split="train"),
         "nfcorpus": _DatasetInfo(path="jxm/nfcorpus__gtr_base__dpr", split="train"),
-        "passwords-easy": _DatasetInfo(path="dqmis/passwords", split="train"),
-        "passwords-medium": _DatasetInfo(path="dqmis/passwords", split="validation"),
-        "passwords-hard": _DatasetInfo(path="dqmis/passwords", split="test"),
+        "passwords-easy": _DatasetInfo(path="<ANON>/passwords", split="train"),
+        "passwords-medium": _DatasetInfo(path="<ANON>/passwords", split="validation"),
+        "passwords-hard": _DatasetInfo(path="<ANON>/passwords", split="test"),
         "msmarco": _DatasetInfo(path="jxm/msmarco__gtr_base__dpr", split="train"),
     }
 

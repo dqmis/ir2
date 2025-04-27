@@ -68,3 +68,7 @@ where `<RUN_CONFIG>` is the path to the run config file. All of the config files
 - `noise_mean` - (not used if `add_gaussian_noise` is set to false) mean of the Gaussian noise
 - `noise_std` - (not used if `add_gaussian_noise` is set to false) standard deviation of the Gaussian noise
 - `noise_lambda`(not used if `add_gaussian_noise` is set to false) scalar for Gaussian noise
+
+### Miscellaneous
+
+For some datasets, `<ANON>` is used to anonymize the author names.
