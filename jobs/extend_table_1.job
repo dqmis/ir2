@@ -1,0 +1,47 @@
+#!/bin/bash
+
+#SBATCH --output=out/reproduce_table_1_%A.out
+#SBATCH --job-name=ReproduceTable1
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=4
+#SBATCH --time=3:00:00
+#SBATCH --partition=gpu
+#SBATCH --gpus=1
+#SBATCH --ntasks=1
+
+if ! conda info --envs | grep -q 'uva-ir2'; then
+    conda env create -f environment.yaml
+fi
+source activate uva-ir2
+
+if ! pip list 2>/dev/null | grep -q 'ir2'; then
+    pip install -e .
+fi
+
+wandb login $WANDB_API_KEY
+
+# NUM_STEPS_ARR=(1 2 4 8 16 32 64 128)
+# SEQUENCE_BEAM_WIDTH_ARR=(2 4 8 16)
+# NUM_STEPS_ARR=(1 2 4)
+# SEQUENCE_BEAM_WIDTH_ARR=(32)
+NUM_STEPS_ARR=(2)
+SEQUENCE_BEAM_WIDTH_ARR=(64)
+BATCH_SIZE=1
+
+CONFIG_DIR="ir2/runs/table-1-gtr-nq-template"
+mkdir -p "$CONFIG_DIR"
+
+TEMPLATE_PATH="ir2/runs/table-1-gtr-nq-template.yaml"
+
+for NUM_STEPS in "${NUM_STEPS_ARR[@]}"; do
+    for SEQ_BEAM in "${SEQUENCE_BEAM_WIDTH_ARR[@]}"; do
+
+        CONFIG_FILENAME="nq-${NUM_STEPS}-sbeam-${SEQ_BEAM}-b${BATCH_SIZE}.yaml"
+        CONFIG_PATH="$CONFIG_DIR/$CONFIG_FILENAME"
+
+        NUM_STEPS="$NUM_STEPS" SEQUENCE_BEAM_WIDTH="$SEQ_BEAM" BATCH_SIZE="$BATCH_SIZE" envsubst <"$TEMPLATE_PATH" >"$CONFIG_PATH"
+
+        echo "Running configuration: $CONFIG_PATH"
+        python ir2/scripts/reproduce_evaluation.py "$CONFIG_PATH"
+    done
+done

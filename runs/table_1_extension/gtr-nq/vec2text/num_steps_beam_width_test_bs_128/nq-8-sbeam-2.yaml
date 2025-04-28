@@ -1,0 +1,8 @@
+model_name: sentence-transformers/gtr-t5-base
+corrector_name: gtr-base
+dataset: nq
+batch_size: 128
+num_steps: 8
+max_samples: 100
+max_seq_length: 32
+sequence_beam_width: 2
