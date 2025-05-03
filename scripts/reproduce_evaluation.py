@@ -39,6 +39,7 @@ def inference_loop(config: Config):
     reference_strs = []
 
     print("Running inference...")
+
     for batch in tqdm(split_dataset_into_chunks(ds, config.batch_size)):
         input_embeddings, input_tokens = inference_model.get_embeddings(
             batch,
@@ -46,6 +47,7 @@ def inference_loop(config: Config):
             add_gaussian_noise=config.add_gaussian_noise,
             noise_lambda=config.noise_lambda,
         )
+
         prediction_str = inference_model.invert_embeddings(
             input_embeddings,
             num_steps=config.num_steps,
@@ -85,7 +87,6 @@ def inference_loop(config: Config):
 if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else "config.yaml"
     config = Config.load(config_path)
-    results = inference_loop(config)
 
 <<<<<<< HEAD
     wandb.init(project="ir2", config=config)
@@ -93,5 +94,8 @@ if __name__ == "__main__":
     wandb.init(project="vec2text-repro", config=config)
 >>>>>>> ed39763 (Removing uva connection)
     wandb.run.name = f"model-{config.model_name}_corrector-{config.corrector_name}_steps-{config.num_steps}_beam-{config.sequence_beam_width}_nucleus-{config.do_sample}"
+
+    results = inference_loop(config)
+
     wandb.log(results)
     wandb.finish()
