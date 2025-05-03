@@ -72,13 +72,7 @@ def inference_loop(config: Config):
     )
 
     if config.dataset == "mimic-iii":  # Relevant for table 3
-<<<<<<< HEAD
         name_recovery_metrics = compute_name_recovery_rates(prediction_strs, reference_strs)
-=======
-        name_recovery_metrics = compute_name_recovery_rates(
-            prediction_strs, reference_strs
-        )
->>>>>>> ed39763 (Removing uva connection)
         metrics.update(name_recovery_metrics)
 
     return metrics
@@ -88,11 +82,7 @@ if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else "config.yaml"
     config = Config.load(config_path)
 
-<<<<<<< HEAD
-    wandb.init(project="ir2", config=config)
-=======
     wandb.init(project="vec2text-repro", config=config)
->>>>>>> ed39763 (Removing uva connection)
     wandb.run.name = f"model-{config.model_name}_corrector-{config.corrector_name}_steps-{config.num_steps}_beam-{config.sequence_beam_width}_nucleus-{config.do_sample}"
 
     results = inference_loop(config)
