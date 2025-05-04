@@ -9,6 +9,7 @@ python = "^3.11"
 vec2text = "^0.0.12"
 wandb = "^0.18.6"
 tiktoken = "^0.8.0"
+seaborn = "^0.13.2"
 
 
 [tool.poetry.group.dev.dependencies]
