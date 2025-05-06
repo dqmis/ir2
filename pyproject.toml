@@ -56,7 +56,7 @@ exclude = '''
 profile = "black"
 skip = ["conftest.py", ".git", "__pycache__", ".venv"]
 [tool.mypy]
-files = "ir2/**/*.py"
+files = "vec2text-repro/**/*.py"
 warn_unused_configs = true
 disallow_subclassing_any = true
 disallow_untyped_calls = true

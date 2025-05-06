@@ -5,11 +5,11 @@ import sys
 import wandb
 from tqdm import tqdm
 
-from ir2.config import Config
-from ir2.dataset_loader import DatasetLoader
-from ir2.inference_model import Vec2textInferenceModel
-from ir2.utils import split_dataset_into_chunks
-from ir2.vec2text_measures import compute_text_comparison_metrics
+from vec2text-repro.config import Config
+from vec2text-repro.dataset_loader import DatasetLoader
+from vec2text-repro.inference_model import Vec2textInferenceModel
+from vec2text-repro.utils import split_dataset_into_chunks
+from vec2text-repro.vec2text_measures import compute_text_comparison_metrics
 
 random.seed(42)
 

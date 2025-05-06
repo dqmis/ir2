@@ -1,4 +1,4 @@
-from ir2.inference_model import Vec2textInferenceModel
+from vec2text-repro.inference_model import Vec2textInferenceModel
 
 if __name__ == "__main__":
     model = Vec2textInferenceModel(

@@ -9,12 +9,12 @@
 #SBATCH --gpus=1
 #SBATCH --ntasks=1
 
-if ! conda info --envs | grep -q 'uva-ir2'; then
+if ! conda info --envs | grep -q 'vec2text-repro'; then
     conda env create -f environment.yaml
 fi
-source activate uva-ir2
+source activate vec2text-repro
 
-if ! pip list 2>/dev/null | grep -q 'ir2'; then
+if ! pip list 2>/dev/null | grep -q 'vec2text-repro'; then
     pip install -e .
 fi
 
@@ -28,10 +28,10 @@ NUM_STEPS_ARR=(2)
 SEQUENCE_BEAM_WIDTH_ARR=(64)
 BATCH_SIZE=1
 
-CONFIG_DIR="ir2/runs/table-1-gtr-nq-template"
+CONFIG_DIR="vec2text-repro/runs/table-1-gtr-nq-template"
 mkdir -p "$CONFIG_DIR"
 
-TEMPLATE_PATH="ir2/runs/table-1-gtr-nq-template.yaml"
+TEMPLATE_PATH="vec2text-repro/runs/table-1-gtr-nq-template.yaml"
 
 for NUM_STEPS in "${NUM_STEPS_ARR[@]}"; do
     for SEQ_BEAM in "${SEQUENCE_BEAM_WIDTH_ARR[@]}"; do
@@ -42,6 +42,6 @@ for NUM_STEPS in "${NUM_STEPS_ARR[@]}"; do
         NUM_STEPS="$NUM_STEPS" SEQUENCE_BEAM_WIDTH="$SEQ_BEAM" BATCH_SIZE="$BATCH_SIZE" envsubst <"$TEMPLATE_PATH" >"$CONFIG_PATH"
 
         echo "Running configuration: $CONFIG_PATH"
-        python ir2/scripts/reproduce_evaluation.py "$CONFIG_PATH"
+        python vec2text-repro/scripts/reproduce_evaluation.py "$CONFIG_PATH"
     done
 done
